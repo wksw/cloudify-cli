@@ -36,6 +36,15 @@ from cloudify_cli.bootstrap.tasks import (
     REST_PORT)
 
 
+bootstrap_security_ctx = {
+    'security_enabled': False,
+    'ssl_enabled': False,
+    'verify_ssl_certificate': False,
+    'cloudify_username': None,
+    'cloudify_password': None
+}
+
+
 def _workdir():
     cloudify_dir = utils.get_init_path()
     workdir = os.path.join(cloudify_dir, 'bootstrap')
@@ -84,11 +93,7 @@ def bootstrap_validation(blueprint_path,
         raise
 
     env.execute(workflow='execute_operation',
-                security_enabled=False,  # security not enabled yet, just starting to bootstrap
-                ssl_enabled=False,
-                verify_ssl_certificate=False,
-                cloudify_username=None,
-                cloudify_password=None,
+                security_ctx=bootstrap_security_ctx,
                 parameters={'operation':
                             'cloudify.interfaces.validation.creation'},
                 task_retries=task_retries,
@@ -124,11 +129,7 @@ def bootstrap(blueprint_path,
         raise
 
     env.execute(workflow='install',
-                security_enabled=False,
-                ssl_enabled=False,
-                verify_ssl_certificate=False,
-                cloudify_username=None,
-                cloudify_password=None,
+                security_ctx=bootstrap_security_ctx,
                 task_retries=task_retries,
                 task_retry_interval=task_retry_interval,
                 task_thread_pool_size=task_thread_pool_size)
@@ -219,6 +220,7 @@ def teardown(name='manager',
              task_thread_pool_size=1):
     env = load_env(name)
     env.execute('uninstall',
+                security_ctx=bootstrap_security_ctx,
                 task_retries=task_retries,
                 task_retry_interval=task_retry_interval,
                 task_thread_pool_size=task_thread_pool_size)
@@ -236,6 +238,7 @@ def recover(name='manager',
         manager_node_instance_id = payload['manager_node_instance_id']
 
     env.execute('heal',
+                security_ctx=bootstrap_security_ctx,
                 parameters={'node_instance_id': manager_node_instance_id},
                 task_retries=task_retries,
                 task_retry_interval=task_retry_interval,
