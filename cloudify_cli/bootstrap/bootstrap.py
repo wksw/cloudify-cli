@@ -282,7 +282,7 @@ def _build_upload_provider_context_cmd(manager_node, update_context,
     if security_enabled:
         username = security_config['admin_username']
         password = security_config['admin_password']
-        credentials_arg = "-u '{0}':'{1}'".format(username, password)
+        credentials_arg = '-u {0}:{1}'.format(username, password)
         ssl_config = security_config.get('ssl', {})
         if ssl_config.get('enabled', False):
             rest_port = constants.SECURED_REST_PORT
@@ -292,7 +292,7 @@ def _build_upload_provider_context_cmd(manager_node, update_context,
 
     request_params = '?update={0}'.format(update_context)
     upload_provider_context_cmd = \
-        'curl --fail {0} {1} -XPOST {1}://localhost:{3}/api/{4}/provider/context{5} -H ' \
+        'curl --fail {0} {1} -XPOST {2}://localhost:{3}/api/{4}/provider/context{5} -H ' \
         '"Content-Type: application/json" -d @{6}'.format(
             verify_cert, credentials_arg, protocol, rest_port,
             constants.API_VERSION, request_params,
