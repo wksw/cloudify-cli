@@ -300,6 +300,8 @@ def _build_upload_provider_context_cmd(manager_node, update_context,
     return upload_provider_context_cmd
 
 
+# TODO: This whole thing can be treated as a standard remote call from now on.
+# TODO: No need to use curl
 def _upload_provider_context(remote_agents_private_key_path, fabric_env,
                              manager_node, manager_node_instance,
                              provider_context=None, update_context=False):
@@ -329,6 +331,7 @@ def _upload_provider_context(remote_agents_private_key_path, fabric_env,
         manager_node, update_context, remote_provider_context_file)
 
     # placing provider context file in the manager's host
+    # TODO remove the printout of this command, the credentials are displayed!
     with fabric.settings(**fabric_env):
         fabric.put(provider_context_json_file, remote_provider_context_file)
         # might need always_use_pty=True
