@@ -84,6 +84,11 @@ def bootstrap_validation(blueprint_path,
         raise
 
     env.execute(workflow='execute_operation',
+                security_enabled=False,  # security not enabled yet, just starting to bootstrap
+                ssl_enabled=False,
+                verify_ssl_certificate=False,
+                cloudify_username=None,
+                cloudify_password=None,
                 parameters={'operation':
                             'cloudify.interfaces.validation.creation'},
                 task_retries=task_retries,
@@ -119,6 +124,11 @@ def bootstrap(blueprint_path,
         raise
 
     env.execute(workflow='install',
+                security_enabled=False,
+                ssl_enabled=False,
+                verify_ssl_certificate=False,
+                cloudify_username=None,
+                cloudify_password=None,
                 task_retries=task_retries,
                 task_retry_interval=task_retry_interval,
                 task_thread_pool_size=task_thread_pool_size)
@@ -272,6 +282,7 @@ def _upload_provider_context(remote_agents_private_key_path, fabric_env,
     provider_context['cloudify'] = cloudify_configuration
     manager_node_instance.runtime_properties['manager_provider_context'] = \
         provider_context
+    rest_port = manager_node_instance.runtime_properties[REST_PORT]
 
     # 'manager_deployment' is used when running 'cfy use ...'
     # and then calling teardown or recover. Anyway, this code will only live
@@ -290,9 +301,9 @@ def _upload_provider_context(remote_agents_private_key_path, fabric_env,
 
     request_params = '?update={0}'.format(update_context)
     upload_provider_context_cmd = \
-        'curl --fail -XPOST localhost:8101/api/{0}/provider/context{1} -H ' \
-        '"Content-Type: application/json" -d @{2}'.format(
-            constants.API_VERSION, request_params,
+        'curl --fail -XPOST localhost:{0}/api/{1}/provider/context{2} -H ' \
+        '"Content-Type: application/json" -d @{3}'.format(
+            rest_port, constants.API_VERSION, request_params,
             remote_provider_context_file)
 
     # placing provider context file in the manager's host
