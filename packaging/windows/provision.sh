@@ -3,7 +3,7 @@
 
 function install_requirements() {
     #for s3cmd installation
-    python -c 'import sys; reload(sys); sys.setdefaultencoding("utf-8")'
+    pip install --upgrade pip
     
     pip install wheel==0.24.0
     pip install s3cmd==1.5.2
