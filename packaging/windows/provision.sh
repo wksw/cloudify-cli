@@ -3,7 +3,7 @@
 
 function install_requirements() {
     pip install wheel==0.24.0
-    pip install s3cmd==1.5.2
+    pip install s3cmd
 }
 
 function download_wheels() {
